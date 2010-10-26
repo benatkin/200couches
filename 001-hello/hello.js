@@ -13,18 +13,21 @@
       "underscore-min.js": "http://documentcloud.github.com/underscore/underscore-min.js",
       "backbone-min.js": "http://documentcloud.github.com/backbone/backbone-min.js"
     },
-    Pusher: {
+    Starter: {
+      doc: "Starter downloads some needed files and initializes and starts Pusher.",
       download: function(files, remaining) {
-        var file;
+        var file, url;
         if (remaining.length === 0) {
           return null;
         }
         file = remaining[0];
-        console.log("Downloading " + (file));
+        url = this.url.parse(files[file]);
+        console.log("Downloading " + (url.pathname) + " from " + (url.hostname));
         return this.download(files, remaining.slice(1));
       },
-      push: function() {
+      start: function() {
         var _ref, file, files, remaining, url;
+        this.url = require('url');
         files = this.root.files;
         remaining = [];
         _ref = files;
@@ -37,8 +40,8 @@
       }
     },
     init: function() {
-      this.Pusher.root = (this.Pusher.parent = this);
-      return this.Pusher.push();
+      this.Starter.root = (this.Starter.parent = this);
+      return this.Starter.start();
     }
   };
   Hello.init();
