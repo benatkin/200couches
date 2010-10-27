@@ -2,23 +2,38 @@
   var Hello;
   var __hasProp = Object.prototype.hasOwnProperty;
   Hello = {
-    layout: {
-      scripts: {
-        "jquery.js": "https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js",
-        "underscore.js": true,
-        "backbone.js": true
-      }
-    },
     attachments: {
       "underscore-min.js": "http://documentcloud.github.com/underscore/underscore-min.js",
       "backbone-min.js": "http://documentcloud.github.com/backbone/backbone-min.js"
     },
+    layout: {
+      scripts: {
+        "jquery.js": "https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js",
+        "underscore.js": "_attachments/underscore-min.js",
+        "backbone.js": "_attachments/backbone-min.js"
+      }
+    },
+    init: function() {
+      this.Starter.root = (this.Starter.parent = this);
+      return this.Starter.start();
+    },
+    requires: {
+      "backbone": true
+    },
     Starter: {
       doc: "Starter downloads some needed files and initializes and starts Pusher.",
+      activate: function() {
+        var Backbone;
+        this.root.requires.underscore = require('./underscore-min.js');
+        this.root.requires.backbone = require('./backbone-min.js');
+        Backbone = this.root.requires.backbone;
+        return (this.root.Starter = Backbone.Model.extend(this));
+      },
       download: function(files, remaining) {
         var chunks, file, request, self, server, url;
         if (remaining.length === 0) {
-          return null;
+          this.activate();
+          return new this.root.Starter();
         }
         file = remaining[0];
         url = this.url.parse(files[file]);
@@ -41,6 +56,9 @@
           });
         });
       },
+      initialize: function() {
+        return console.log("Hello from Backbone.js!");
+      },
       start: function() {
         var _ref, file, files, remaining, url;
         this.url = require('url');
@@ -56,10 +74,6 @@
         }
         return this.download(files, remaining);
       }
-    },
-    init: function() {
-      this.Starter.root = (this.Starter.parent = this);
-      return this.Starter.start();
     }
   };
   Hello.init();
